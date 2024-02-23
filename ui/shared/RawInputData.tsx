@@ -5,13 +5,14 @@ import hexToUtf8 from 'lib/hexToUtf8';
 import CopyToClipboard from 'ui/shared/CopyToClipboard';
 
 type DataType = 'Hex' | 'UTF-8'
-const OPTIONS: Array<DataType> = [ 'Hex', 'UTF-8' ];
+// const OPTIONS: Array<DataType> = [ 'Hex', 'UTF-8' ];
 
 interface Props {
   hex: string;
+  options?: Array<DataType>;
 }
 
-const RawInputData = ({ hex }: Props) => {
+const RawInputData = ({ hex, options = [ 'Hex', 'UTF-8' ] }: Props) => {
   const [ selectedDataType, setSelectedDataType ] = React.useState<DataType>('Hex');
 
   const handleSelectChange = React.useCallback((event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -22,7 +23,7 @@ const RawInputData = ({ hex }: Props) => {
     <Box w="100%">
       <Flex justifyContent="space-between" alignItems="center">
         <Select size="xs" borderRadius="base" value={ selectedDataType } onChange={ handleSelectChange } focusBorderColor="none" w="auto">
-          { OPTIONS.map((option) => <option key={ option } value={ option }>{ option }</option>) }
+          { options.map((option) => <option key={ option } value={ option }>{ option }</option>) }
         </Select>
         <CopyToClipboard text={ hex }/>
       </Flex>

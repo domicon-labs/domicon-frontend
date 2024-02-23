@@ -13,7 +13,8 @@ import {
   Alert,
 } from '@chakra-ui/react';
 import BigNumber from 'bignumber.js';
-import React from 'react';
+import { useRouter } from 'next/router';
+import React, { useEffect } from 'react';
 import { scroller, Element } from 'react-scroll';
 
 import { ZKEVM_L2_TX_STATUSES } from 'types/api/transaction';
@@ -21,9 +22,11 @@ import { ZKEVM_L2_TX_STATUSES } from 'types/api/transaction';
 import { route } from 'nextjs-routes';
 
 import config from 'configs/app';
+import { fetchTransactionShow } from 'lib/api/commonApi';
 import { WEI, WEI_IN_GWEI } from 'lib/consts';
 import dayjs from 'lib/date/dayjs';
 import getNetworkValidatorTitle from 'lib/networks/getNetworkValidatorTitle';
+import getQueryParamString from 'lib/router/getQueryParamString';
 import getConfirmationDuration from 'lib/tx/getConfirmationDuration';
 import Tag from 'ui/shared/chakra/Tag';
 import CopyToClipboard from 'ui/shared/CopyToClipboard';
@@ -57,8 +60,29 @@ import useFetchTxInfo from 'ui/tx/useFetchTxInfo';
 
 const TxDetails = () => {
   const { data, isPlaceholderData, isError, socketStatus, error } = useFetchTxInfo();
+  const router = useRouter();
 
   const [ isExpanded, setIsExpanded ] = React.useState(false);
+  const hash = getQueryParamString(router.query.hash);
+  const [ fileData, setFileData ] = React.useState('');
+
+  const getTransaction = () => {
+    fetchTransactionShow(hash)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .then((res: any) => {
+        // eslint-disable-next-line no-console
+        console.log(res, 'fetchTransactionShow');
+        if (res.success) {
+          setFileData(res?.data?.file_data);
+        }
+        // const data = res.return_data || {};
+      });
+  };
+
+  useEffect(() => {
+    getTransaction();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleCutClick = React.useCallback(() => {
     setIsExpanded((flag) => !flag);
@@ -519,7 +543,13 @@ const TxDetails = () => {
               title="Raw input"
               hint="Binary data included with the transaction. See logs tab for additional info"
             >
-              <RawInputData hex={ data.raw_input }/>
+              <RawInputData hex={ data.raw_input } options={ [ 'Hex', 'UTF-8' ] }/>
+            </DetailsInfoItem>
+            <DetailsInfoItem
+              title="DA data"
+              hint="DA data"
+            >
+              <RawInputData hex={ fileData } options={ [ 'Hex' ] }/>
             </DetailsInfoItem>
             { data.decoded_input && (
               <DetailsInfoItem
