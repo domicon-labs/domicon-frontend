@@ -36,3 +36,31 @@ See our [Contribution guide](./docs/CONTRIBUTING.md) for pull request protocol. 
 [![License: GPL v3.0](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 This project is licensed under the GNU General Public License v3.0. See the [LICENSE](LICENSE) file for details.
+
+编译
+
+```shell
+$ make build
+```
+
+构建镜像
+```shell
+$ make build-docker
+```
+
+启动镜像
+```shell
+$ make run
+```
+
+停止镜像
+```shell
+$ make stop
+```
+
+
+重启镜像
+```shell
+$ make restart
+```
+
