@@ -75,7 +75,6 @@ const TxDetails = () => {
         if (res.success) {
           setFileData(res?.data?.file_data);
         }
-        // const data = res.return_data || {};
       });
   };
 
